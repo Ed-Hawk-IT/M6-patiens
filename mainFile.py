@@ -65,3 +65,5 @@ print_card(deck[0][0], deck[0][1])
 print_card(deck[13][0], deck[13][1])
 print_card(deck[26][0], deck[26][1])
 print_card(deck[39][0], deck[39][1])
+
+#good don´t you have to explain in person what what does /edvard
