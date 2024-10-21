@@ -19,8 +19,8 @@ def print_card(suit, rank):
 	default = "\033[0m"
 
 	color = default		# terminal color
-	symbol = "ERR"		# suit unicode symbol
-	value = str(rank)	# rank unicode symbol (A, 1...10, J, Q, K)
+	symbol = "ERR"		# suit unicode symbol, ERR if suit is invalid
+	value = str(rank)	# rank character (A, 1...10, J, Q, K)
 
 
 	if suit == 'S':
