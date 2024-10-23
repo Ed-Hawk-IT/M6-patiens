@@ -1,3 +1,5 @@
+import random
+
 deck = []
 pile1 = []
 pile2 = []
@@ -12,6 +14,7 @@ def initCards():
     for suit in suits:
         for rank in ranks:
             deck.append ((suit, rank))
+    random.shuffle(deck) # shuffle deck 
 
 
 def print_card(suit, rank, halfcard):
@@ -75,3 +78,10 @@ print_card(deck[39][0], deck[39][1], True)
 print_card(deck[40][0], deck[40][1], False)
 
 #good don´t you have to explain in person what what does /edvard
+
+def moveCards(fromPile, toPile):  #move a card from index 0 to index 0
+    card = fromPile[0]
+    del fromPile[0]
+    toPile.insert(0,card)
+    print (toPile)
+
