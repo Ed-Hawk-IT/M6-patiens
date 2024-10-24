@@ -17,68 +17,130 @@ def initCards():
     random.shuffle(deck) # shuffle deck 
 
 
-def print_card(suit, rank, halfcard):
+
+
+
+# print_row_of_cards(cards, sections): print 4 cards lying next to eachother, one half (upper/lower) at a time
+# parameter explanation:
+#
+# cards[4] (different types of elements):
+#   (suit, rank)    - tuple representing a card denoted by suit and rank (same as those in deck[])
+#   int             - if 0: empty outline of a card, if non-zero: outline of a card with specified value, denoting hidden cards
+#   None            - empty, print whitespace
+#
+# bool sections[4]:
+#   True    - print upper part of corresponding card (same index) in cards[]
+#   False   - print lower part
+def print_row_of_cards(cards, sections):
     red = "\033[31m"
     default = "\033[0m"
 
-    color = default     # terminal color
-    symbol = "ERR"      # suit unicode symbol, ERR if suit is invalid
-    value = str(rank)   # rank character (A, 1...10, J, Q, K)
+    white = "    "
+    upper_line = "\u256D\u2500\u2500\u256E"
+    lower_line = "\u2570\u2500\u2500\u256F"
+    pipe = '\u2502'
+
+    colors = [default, default, default, default]    # terminal color
+    symbols = ["", "", "", ""]   # suit unicode symbol
+    values = ["", "", "", ""]    # rank character (A, 1...9, T, J, Q, K)
+
+    # rows to print
+    row1 = ""
+    row2 = ""
+
+    if len(cards) != 4:
+        print("invalid set of cards passed to print_card_row()")
+        exit()
 
 
-    if suit == 'S':
-        symbol = '\u2660'
-        color = default
-
-    elif suit == 'H':
-        symbol = '\u2665'
-        color = red;
-
-    elif suit == 'D':
-        symbol = '\u2666'
-        color = red;
-
-    elif suit == 'C':
-        symbol = '\u2663'
-        color = default
+    for i in range(4):
+        if cards[i] == None:    # empty (no card), print whitespace (handled later by checking cards[i])
+            continue
 
 
-    # change ace (14), jack (11), queen (12), king (13) to A, J, Q, K respectively
-    # change 10 to T because other wise that card is wider then the others//ed
-    if value == '1' or value == '14':
-        value = 'A'
+        if type(cards[i]) is int:   # print card outline with or without additional game state information
+            colors[i] = default
+            if cards[i]:    # print card outline with with number indicating hidden cards
+                values[i] = str(cards[i])
+                symbols[i] = '+'
 
-    elif value == '11':
-        value = 'J'
+            else:   # only card outline
+                values[i] = ' '
+                symbols[i] = ' '
 
-    elif value == '12':
-        value = 'Q'
+            continue
 
-    elif value == '13':
-        value = 'K'
+
+        # else, print a card
+        #TODO put in a separate fn?
+
+        suit = cards[i][0]
+        rank = cards[i][1]
+
+        if suit == 'S':
+            symbols[i] = '\u2660'
+            colors[i] = default
+
+        elif suit == 'H':
+            symbols[i] = '\u2665'
+            colors[i] = red;
+
+        elif suit == 'D':
+            symbols[i] = '\u2666'
+            colors[i] = red;
+
+        elif suit == 'C':
+            symbols[i] = '\u2663'
+            colors[i] = default
+
+
+        # change ace (14), (10), jack (11), queen (12), king (13) to A, T, J, Q, K respectively
+        if rank == 1 or rank == 14:
+            values[i] = 'A'
+
+        elif rank == 10:   # '10' is two characters and therefore looks skewed when printed
+            values[i] = 'T'
+
+        elif rank == 11:
+            values[i] = 'J'
+
+        elif rank == 12:
+            values[i] = 'Q'
+
+        elif rank == 13:
+            values[i] = 'K'
+
+        else:
+            values[i] = str(rank)
         
 
-    print("\u256D\u2500\u2500\u256E")
-    print('\u2502' + color + value + symbol + default + '\u2502')
-    if not halfcard:    # print lower part of card
-        print('\u2502' + color + symbol + value + default + '\u2502')
-        print("\u2570\u2500\u2500\u256F")
+    # build row1, row2
+    for i in range(4):
+        if cards[i] == None:    # print whitespace (no card)
+            row1 += white
+            row2 += white
+
+        elif sections[i]:   # print upper part of card
+            row1 += upper_line
+            row2 += pipe + colors[i] + values[i] + symbols[i] + default + pipe
+
+        else:   # print lower part of card
+            row1 += pipe + colors[i] + symbols[i] + values[i] + default + pipe
+            row2 += lower_line
+
+
+    print(row1)
+    print(row2)
 
 
 initCards()
-print_card(deck[0][0], deck[0][1], True)
-print_card(deck[1][0], deck[1][1], False)
 
-print_card(deck[13][0], deck[13][1], True)
-print_card(deck[14][0], deck[14][1], False)
+#example
+print_row_of_cards([2, 2, 2, 2], [True, True, True, True])
+print_row_of_cards([('S', 14), ('H', 11), ('C', 3), 0], [True, True, True, True])
+print_row_of_cards([('S', 14), ('H', 11), ('C', 3), 0], [True, True, False, False])
+print_row_of_cards([('S', 14), ('H', 11), None, None], [False, False, False, False])
 
-print_card(deck[26][0], deck[26][1], True)
-print_card(deck[27][0], deck[27][1], False)
-
-print_card(deck[39][0], deck[39][1], True)
-print_card(deck[40][0], deck[40][1], False)
-
-#good don´t you have to explain in person what what does /ed
 
 #func below are acctions, but not rules
 
