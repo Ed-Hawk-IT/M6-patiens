@@ -23,6 +23,56 @@ def viewdict (ls):
 
 
 
+# print_cards(): prints out current cards on (pile1, pile2, pile3, pile4), calls print_row_of_cards()
+def print_cards():
+    piles = [pile1, pile2, pile3, pile4]
+
+    depth = 0
+    for pile in piles:
+        if len(pile) > depth:
+            depth = len(pile)
+
+    depth += 1
+    if depth == 1:
+        depth = 2
+    
+    # depth is the number of rows to print
+    # depth is atleast 2, as printing empty card outlines requires 2 rows
+
+    # one call to print_row_at_cards() per iteration
+    for i in range(depth):
+        cards = []
+        sections = []
+
+        for pile in piles:
+
+            # empty pile and first 2 rows -> print empty card outline
+            if len(pile) == 0 and i < 2:    
+                cards.append(0)
+                if i == 0:  # print upper part of empty card outline
+                    sections.append(True)
+                else:   # print lower part of empty card outline
+                    sections.append(False)
+
+            # deeper than current pile -> print whitespace
+            elif i > len(pile): 
+                cards.append(None)
+                sections.append(True)   # as card is None this bool has no effect, but something has to be there for indexes to match
+
+            # reached top of current pile -> print lower part of top card
+            elif i == len(pile):    
+                cards.append(pile[i-1])
+                sections.append(False)
+
+            # print upper part of current card
+            else:  
+                cards.append(pile[i])
+                sections.append(True)
+
+
+        print_row_of_cards(cards, sections)
+
+
 
 # print_row_of_cards(cards, sections): print 4 cards lying next to eachother, one half (upper/lower) at a time
 # parameter explanation:
@@ -137,15 +187,6 @@ def print_row_of_cards(cards, sections):
     print(row2)
 
 
-initCards()
-
-#example
-print_row_of_cards([2, 2, 2, 2], [True, True, True, True])
-print_row_of_cards([('S', 14), ('H', 11), ('C', 3), 0], [True, True, True, True])
-print_row_of_cards([('S', 14), ('H', 11), ('C', 3), 0], [True, True, False, False])
-print_row_of_cards([('S', 14), ('H', 11), None, None], [False, False, False, False])
-
-
 #func below are acctions, but not rules
 
 def moveCard(fromPile1, toPile1):  #move a card from index 0 to index 0
@@ -208,3 +249,18 @@ def callAction():
         x = input("From: ")
         discardCard(x)
 
+
+
+
+initCards()
+
+#example
+moveCard(deck, pile1)
+moveCard(deck, pile1)
+moveCard(deck, pile1)
+moveCard(deck, pile2)
+moveCard(deck, pile2)
+moveCard(deck, pile4)
+moveCard(deck, pile4)
+
+print_cards()
