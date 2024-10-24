@@ -44,6 +44,7 @@ def print_card(suit, rank, halfcard):
 
 
     # change ace (14), jack (11), queen (12), king (13) to A, J, Q, K respectively
+    # change 10 to T because other wise that card is wider then the others//ed
     if value == '1' or value == '14':
         value = 'A'
 
@@ -77,11 +78,24 @@ print_card(deck[27][0], deck[27][1], False)
 print_card(deck[39][0], deck[39][1], True)
 print_card(deck[40][0], deck[40][1], False)
 
-#good don´t you have to explain in person what what does /edvard
+#good don´t you have to explain in person what what does /ed
 
-def moveCards(fromPile, toPile):  #move a card from index 0 to index 0
+#func below are acctions, but not rules
+
+def moveCard(fromPile, toPile):  #move a card from index 0 to index 0
     card = fromPile[0]
     del fromPile[0]
     toPile.insert(0,card)
     print (toPile)
+
+def discardCard(fromPile): #discard a card
+    discard = [] 
+    moveCard(fromPile, discard)
+    discard = []
+
+def addCards(DECK,PILE1,PILE2,PILE3,PILE4): #add four card in all piles
+    moveCard(DECK,PILE1)
+    moveCard(DECK,PILE2)
+    moveCard(DECK,PILE3)
+    moveCard(DECK,PILE4)
 
