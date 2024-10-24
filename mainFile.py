@@ -83,19 +83,16 @@ print_card(deck[40][0], deck[40][1], False)
 #func below are acctions, but not rules
 
 def moveCard(fromPile, toPile):  #move a card from index 0 to index 0
-    card = fromPile[0]
-    del fromPile[0]
-    toPile.insert(0,card)
-    print (toPile)
+    card = fromPile[-1]
+    fromPile.pop()
+    toPile.append(card)
 
 def discardCard(fromPile): #discard a card
-    discard = [] 
-    moveCard(fromPile, discard)
-    discard = []
+    fromPile.pop()
 
-def addCards(DECK,PILE1,PILE2,PILE3,PILE4): #add four card in all piles
-    moveCard(DECK,PILE1)
-    moveCard(DECK,PILE2)
-    moveCard(DECK,PILE3)
-    moveCard(DECK,PILE4)
+def addCards(): #add four card in all piles
+    moveCard(deck,pile1)
+    moveCard(deck,pile2)
+    moveCard(deck,pile3)
+    moveCard(deck,pile4)
 
