@@ -85,6 +85,7 @@ def print_cards():
 # bool sections[4]:
 #   True    - print upper part of corresponding card (same index) in cards[]
 #   False   - print lower part
+
 def print_row_of_cards(cards, sections):
     red = "\033[31m"
     default = "\033[0m"
@@ -208,21 +209,31 @@ def addCards(): #add four card in all piles
 def moveCardRules(fromPile3,topile3):
     if len(topile3) != 0:
         print("Error: Targeted pile not empty")
+        print()
     elif len(fromPile3) == 0:
         print("Error: Source pile is empty")
+        print()
     else:
         moveCard(fromPile3,topile3)
 
-def discardCardRules(formPile4): #är nummer nu?
+def discardCardRules(fromPile4): #är nummer nu?
     status = False
     topCards = []
     cardPiles = [pile1, pile2, pile3, pile4]
+    x = 1
+    for i in cardPiles:
+        if i == x:
+            fromPile4 = i
+        else:
+            x = x + 1
     for p in cardPiles:
         if len (p) == 0:
             p.append(("Joker",0))
         pCard = p[-1]
         topCards.append(pCard)
-    discarded = formPile4[-1] #kan nu vara tom
+    if len (fromPile4) == 0:
+        fromPile4.append(("Joker",0))
+    discarded = fromPile4[-1]
     for c in topCards:
         if c[0] == discarded[0]:
             if c[1] > discarded[1]:
@@ -230,7 +241,12 @@ def discardCardRules(formPile4): #är nummer nu?
     for p in cardPiles:
         if len (p) == 1:
             p.pop()
-    return (status)
+    if status == True:
+        discardCard(fromPile4)
+    else:
+        print("Error: targeted card not discardable")
+        print()
+
 
 
 #func below are player actions,
@@ -247,11 +263,8 @@ def callAction():
         moveCardRules(x,y)
     elif action == "d":
         x = input("From: ")
-        discardCard(x)
-
-
-
-
+        y = discardCardRules(x)
+        
 initCards()
 
 #example
