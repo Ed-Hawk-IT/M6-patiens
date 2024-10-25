@@ -267,13 +267,24 @@ def callAction():
         
 initCards()
 
-#example
-moveCard(deck, pile1)
-moveCard(deck, pile1)
-moveCard(deck, pile1)
-moveCard(deck, pile2)
-moveCard(deck, pile2)
-moveCard(deck, pile4)
-moveCard(deck, pile4)
 
+#game loop
+
+def gameLoop():
+    print("#do this together//ed")
+
+#example
+
+def test():
+    moveCard(deck, pile1)
+    moveCard(deck, pile1)
+    moveCard(deck, pile1)
+    moveCard(deck, pile2)
+    moveCard(deck, pile2)
+    moveCard(deck, pile4)
+    moveCard(deck, pile4)
+
+test()
 print_cards()
+
+
