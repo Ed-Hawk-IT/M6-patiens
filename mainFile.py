@@ -209,11 +209,11 @@ def addCards(): #add four card in all piles
 #func below are Rules,
 
 
-# moves top card in src to dst assuming it's allowed (dst empty)
-# return status:
-#   2   dst is not empty
-#   1   src is empty
-#   0   success
+# moves top card in src to dst, if such operation is permitted (dst empty)
+# return:
+#   2 dst is not empty
+#   1 src is empty
+#   0 success
 def moveCardRules(src, dst):
     if len(src) == 0:
         return 1
@@ -225,36 +225,61 @@ def moveCardRules(src, dst):
     return 0
 
 
-def discardCardRules(fromPile4): #är nummer nu?
+# discard a card, if such operation is permitted
+#return:
+#   0 succes
+#   1 operation not permitted
+#   2 invalid input
+#   3 source empty (no card to discard)
+def discardCardRules(pile_n): # number between 1 and 4
+    cardPiles = [pile1, pile2, pile3, pile4]
     status = False
     topCards = []
-    cardPiles = [pile1, pile2, pile3, pile4]
-    x = 1
-    for i in cardPiles:
-        if i == x:
-            fromPile4 = i
-        else:
-            x = x + 1
+
+    srcpile = pile_n - 1;
+    if srcpile < 0 or srcpile >= len(cardPiles):
+        return 2    # invalid input
+
     for p in cardPiles:
         if len (p) == 0:
             p.append(("Joker",0))
-        pCard = p[-1]
-        topCards.append(pCard)
-    if len (fromPile4) == 0:
-        fromPile4.append(("Joker",0))
-    discarded = fromPile4[-1]
+        topCards.append(p[-1])
+
+
+    discarded = cardPiles[srcpile][-1]
     for c in topCards:
         if c[0] == discarded[0]:
             if c[1] > discarded[1]:
                 status = True
+
     for p in cardPiles:
-        if len (p) == 1:
+        if len(p) == 1 and p[0][0] == "Joker":
             p.pop()
+
     if status == True:
-        discardCard(fromPile4)
-    else:
-        print("Error: targeted card not discardable")
-        print()
+        discardCard(cardPiles[srcpile])
+        return 0    #success
+
+    if discarded[0] == "Joker":
+        return 3    #src empty
+    
+    return 1    # card not discardable
+
+    #alt.ver. without jokers:
+    #srcpile = pile_n - 1;
+    #if srcpile < 0 or srcpile >= len(cardPiles):
+    #    return 2
+    #if not len(cardPiles[srcpile]):
+    #    return 3
+    #srccard = cardPiles[srcpile][-1]
+    #for i in range(len(cardPiles)):
+    #    if srcpile == i or not len(cardPiles[i]):
+    #        continue
+    #    cmpcard = cardPiles[i][-1] 
+    #    if cmpcard[0] == srccard[0] and cmpcard[1] > srccard[1]:
+    #        cardPiles[srcpile].pop()
+    #        return 0
+    #return 1
 
 
 
@@ -293,5 +318,14 @@ def test():
     moveCard(deck, pile4)
     moveCard(deck, pile4)
 
-test()
+#test()
+pile1 = [("S", 4), ("H", 13)]
+pile2 = [("C", 14)]
+pile3 = [("H", 11), ("C", 5)]
+pile4 = [("H", 12)]
+print_cards()
+
+print(discardCardRules(4))
+print_cards()
+print(discardCardRules(3))
 print_cards()
