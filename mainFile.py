@@ -89,6 +89,8 @@ def print_cards():
 def print_row_of_cards(cards, sections):
     red = "\033[31m"
     default = "\033[0m"
+    #red = "\033[31m\033[107m" #inverted
+    #default = "\033[30m\033[107m" #inverted
 
     white = "    "
     upper_line = "\u256D\u2500\u2500\u256E"
@@ -190,10 +192,10 @@ def print_row_of_cards(cards, sections):
 
 #func below are acctions, but not rules
 
-def moveCard(fromPile1, toPile1):  #move a card from index 0 to index 0
-    card = fromPile1[-1]
-    fromPile1.pop()
-    toPile1.append(card)
+def moveCard(src, dst):  # move top card in src to dst, assumes src to be non-empty
+    card = src[-1]
+    src.pop()
+    dst.append(card)
 
 def discardCard(fromPile2): #discard a card
     fromPile2.pop()
@@ -206,15 +208,22 @@ def addCards(): #add four card in all piles
 
 #func below are Rules,
 
-def moveCardRules(fromPile3,topile3):
-    if len(topile3) != 0:
-        print("Error: Targeted pile not empty")
-        print()
-    elif len(fromPile3) == 0:
-        print("Error: Source pile is empty")
-        print()
-    else:
-        moveCard(fromPile3,topile3)
+
+# moves top card in src to dst assuming it's allowed (dst empty)
+# return status:
+#   2   dst is not empty
+#   1   src is empty
+#   0   success
+def moveCardRules(src, dst):
+    if len(src) == 0:
+        return 1
+
+    if len(dst):
+        return 2
+
+    moveCard(src, dst)
+    return 0
+
 
 def discardCardRules(fromPile4): #är nummer nu?
     status = False
@@ -286,5 +295,3 @@ def test():
 
 test()
 print_cards()
-
-
