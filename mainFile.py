@@ -211,17 +211,25 @@ def addCards(): #add four card in all piles
 
 # moves top card in src to dst, if such operation is permitted (dst empty)
 # return:
+#   3 invalid input
 #   2 dst is not empty
 #   1 src is empty
 #   0 success
 def moveCardRules(src, dst):
-    if len(src) == 0:
+    piles = [pile1, pile2, pile3, pile4]
+    srcpile = src-1
+    dstpile = dst-1
+
+    if srcpile < 0 or dstpile < 0 or srcpile >= len(piles) or dstpile >= len(piles):
+        return 3
+
+    if len(piles[srcpile]) == 0:
         return 1
 
-    if len(dst):
+    if len(piles[dstpile]):
         return 2
 
-    moveCard(src, dst)
+    moveCard(piles[srcpile], piles[dstpile])
     return 0
 
 
@@ -244,7 +252,6 @@ def discardCardRules(pile_n): # number between 1 and 4
         if len (p) == 0:
             p.append(("Joker",0))
         topCards.append(p[-1])
-
 
     discarded = cardPiles[srcpile][-1]
     for c in topCards:
@@ -299,33 +306,48 @@ def callAction():
         x = input("From: ")
         y = discardCardRules(x)
         
-initCards()
-
 
 #game loop
-
 def gameLoop():
     print("#do this together//ed")
 
+
+initCards()
+
+#TEMP prototype
+while True:
+    print_cards()
+
+    inp = input()
+    if inp == 'd':
+        if len(deck) >= 4:
+            addCards()
+
+    elif len(inp) >= 2 and inp[1] == 'd':
+        discardCardRules(int(inp[0]))
+
+    elif len(inp) >= 2:
+        moveCardRules(int(inp[0]), int(inp[1]))
+
+
 #example
-
-def test():
-    moveCard(deck, pile1)
-    moveCard(deck, pile1)
-    moveCard(deck, pile1)
-    moveCard(deck, pile2)
-    moveCard(deck, pile2)
-    moveCard(deck, pile4)
-    moveCard(deck, pile4)
-
-#test()
-pile1 = [("S", 4), ("H", 13)]
-pile2 = [("C", 14)]
-pile3 = [("H", 11), ("C", 5)]
-pile4 = [("H", 12)]
-print_cards()
-
-print(discardCardRules(4))
-print_cards()
-print(discardCardRules(3))
-print_cards()
+#def test():
+#    moveCard(deck, pile1)
+#    moveCard(deck, pile1)
+#    moveCard(deck, pile1)
+#    moveCard(deck, pile2)
+#    moveCard(deck, pile2)
+#    moveCard(deck, pile4)
+#    moveCard(deck, pile4)
+#
+##test()
+#pile1 = [("S", 4), ("H", 13)]
+#pile2 = [("C", 14)]
+#pile3 = [("H", 11), ("C", 5)]
+#pile4 = [("H", 12)]
+#print_cards()
+#
+#print(discardCardRules(4))
+#print_cards()
+#print(discardCardRules(3))
+#print_cards()
