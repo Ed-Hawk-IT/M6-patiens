@@ -424,6 +424,7 @@ def gameLoop():
                 print(f"{i}: {scorelist[i]}")
                 x = x + scorelist[i]
             print ()
+            print(scorelist)
             if len(scorelist) != 0:
                 average = round((x) / (len(scorelist)),2 )
             else:
