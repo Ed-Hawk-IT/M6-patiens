@@ -5,6 +5,7 @@ pile1 = []
 pile2 = []
 pile3 = []
 pile4 = []
+cards_discarded = 0
 
 
 
@@ -70,12 +71,51 @@ def print_cards():
                 sections.append(True)
 
 
-        print_row_of_cards(cards, sections)
+
+        upper_line = "\u256D\u2500\u2500\u256E"
+        lower_line = "\u2570\u2500\u2500\u256F"
+        pipe = '\u2502'
+        
+        cards_discarded_str = ""
+        cards_left_str = ""
+
+        if cards_discarded < 10:
+            cards_discarded_str += "0"
+        if len(deck) < 10:
+            cards_left_str += "0"
+    
+        cards_discarded_str += str(cards_discarded)
+        cards_left_str += str(len(deck))
+
+
+        post = [
+            "    " + upper_line,
+            "    " + pipe + cards_left_str + pipe,
+            "    " + pipe + cards_discarded_str + pipe,
+            "    " + lower_line 
+        ]
+        whitespace = ["", "        "]
+
+        if i == 0:
+            prestr = [whitespace[0], whitespace[0]]
+            poststr = [post[0], post[1]]
+        elif i == 1:
+            prestr = [whitespace[0], whitespace[0]]
+            poststr = [post[2], post[3]]
+        else:
+            prestr = [whitespace[0], whitespace[0]]
+            poststr = [whitespace[1], whitespace[1]]
+
+        print_row_of_cards(prestr, cards, sections, poststr)
 
 
 
 # print_row_of_cards(cards, sections): print 4 cards lying next to eachother, one half (upper/lower) at a time
 # parameter explanation:
+#
+# pre_strings[2]:
+#   [row1, row2]    - strings to be printed before row of cards (2 terminal rows)
+#   None
 #
 # cards[4] (different types of elements):
 #   (suit, rank)    - tuple representing a card denoted by suit and rank (same as those in deck[])
@@ -85,8 +125,12 @@ def print_cards():
 # bool sections[4]:
 #   True    - print upper part of corresponding card (same index) in cards[]
 #   False   - print lower part
-
-def print_row_of_cards(cards, sections):
+#
+# post_strings[2]:
+#   [row1, row2]    - strings to be printed after row of cards
+#   None
+#
+def print_row_of_cards(pre_strings, cards, sections, post_strings):
     red = "\033[31m"
     default = "\033[0m"
     #red = "\033[31m\033[107m" #inverted
@@ -172,6 +216,10 @@ def print_row_of_cards(cards, sections):
         
 
     # build row1, row2
+    if pre_strings:
+        row1 += pre_strings[0]
+        row2 += pre_strings[1]
+
     for i in range(4):
         if cards[i] == None:    # print whitespace (no card)
             row1 += white
@@ -185,6 +233,9 @@ def print_row_of_cards(cards, sections):
             row1 += pipe + colors[i] + symbols[i] + values[i] + default + pipe
             row2 += lower_line
 
+    if post_strings:
+        row1 += post_strings[0]
+        row2 += post_strings[1]
 
     print(row1)
     print(row2)
@@ -234,6 +285,7 @@ def moveCardRules(src, dst):
 
 
 # discard a card, if such operation is permitted
+# updates global variable cards_discarded
 #return:
 #   0 succes
 #   1 operation not permitted
@@ -243,6 +295,7 @@ def discardCardRules(pile_n): # number between 1 and 4
     cardPiles = [pile1, pile2, pile3, pile4]
     status = False
     topCards = []
+    global cards_discarded
 
     srcpile = pile_n - 1;
     if srcpile < 0 or srcpile >= len(cardPiles):
@@ -265,6 +318,7 @@ def discardCardRules(pile_n): # number between 1 and 4
 
     if status == True:
         discardCard(cardPiles[srcpile])
+        cards_discarded += 1
         return 0    #success
 
     if discarded[0] == "Joker":
