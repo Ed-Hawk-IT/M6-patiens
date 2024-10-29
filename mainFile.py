@@ -334,25 +334,7 @@ def discardCardRules(pile_n): # number between 1 and 4
     
     return 1    # card not discardable
 
-    #alt.ver. without jokers:
-    #srcpile = pile_n - 1;
-    #if srcpile < 0 or srcpile >= len(cardPiles):
-    #    return 2
-    #if not len(cardPiles[srcpile]):
-    #    return 3
-    #srccard = cardPiles[srcpile][-1]
-    #for i in range(len(cardPiles)):
-    #    if srcpile == i or not len(cardPiles[i]):
-    #        continue
-    #    cmpcard = cardPiles[i][-1] 
-    #    if cmpcard[0] == srccard[0] and cmpcard[1] > srccard[1]:
-    #        cardPiles[srcpile].pop()
-    #        return 0
-    #return 1
-
-
-
-#func below are player actions,
+#func below are player actions
 
 def callAction():
     choice = {"n": "New Cards", "m": "Move", "d": "discard", "f":"finish"}
@@ -396,13 +378,18 @@ def callAction():
 def gameLoop():
     scorelist = []
     while True:
+        deck.clear()
+        pile1.clear()
+        pile2.clear()
+        pile3.clear()
+        pile4.clear()
+        initCards()
         print ("Patiens Idioten")
         print()
         game = {"n":"New game", "s":"score", "q":"quit"}
         viewdict(game)
         opt = input("choose option: ")
         if opt == "n":
-            initCards()
             while True:
                 print_cards()
                 if callAction():
@@ -411,11 +398,6 @@ def gameLoop():
             print (f"your score was: {score}")
             scorelist.append(score)
             print()
-            deck = []
-            pile1 = []
-            pile2 = []
-            pile3 = []
-            pile4 = []
         elif opt == "s":
             print ("Your scores:")
             print ()
