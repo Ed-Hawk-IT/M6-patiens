@@ -17,6 +17,8 @@ def initCards(): #makes tuples of cards that are put in a deck.
             deck.append ((suit, rank))
     random.shuffle(deck) # shuffle deck 
 
+
+
 def viewdict (ls): #will print a dictonary
     for i in ls:
         print (f"{i}: {ls[i]}")
@@ -347,7 +349,7 @@ def discardCardRules(pile_n): # number between 1 and 4
 #func below are player actions,
 
 def callAction():
-    choice = {"n": "New Cards", "m": "Move", "d": "discard"}
+    choice = {"n": "New Cards", "m": "Move", "d": "discard", "f":"finish"}
     viewdict(choice)
     action = input("choose action: ")
     if action == "n":
@@ -355,38 +357,84 @@ def callAction():
     elif action == "m":
         x = input("From: ")
         y = input("To: ")
-        moveCardRules(x,y)
+        z = moveCardRules(x,y)
+        if z == 1:
+            print("Error: source pile is empty")
+        elif z == 2:
+            print("Error: targeted pile isn't empty")
+        elif z == 3:
+            print("Error: invalid input")
+        print()
     elif action == "d":
         x = input("From: ")
-        y = discardCardRules(x)
+        z = discardCardRules(x)
+        if z == 1:
+            print("targeted card isn't discardable")
+        elif z == 2:
+            print("Error: invalid input")
+        elif z == 3:
+            print("Error: source pile is empty")
+        print()
+    elif action == "f":
+        return True
+    return False
+        
         
 
+        
+
+
 #game loop
+
+
 def gameLoop():
-    print("#do this together//ed")
+    while True:
+        print ("Patiens Idioten")
+        print()
+        scorelist = []
+        game = {"n":"New game", "s":"score", "q":"quit"}
+        viewdict(game)
+        opt = input("choose option: ")
+        if opt == "n":
+            initCards()
+            while True:
+                print_cards()
+                if callAction():
+                    break
+            score = 48 - cards_discarded
+            print (f"your score was: {score}")
+            scorelist.append(score)
+            print()
+            deck = []
+            pile1 = []
+            pile2 = []
+            pile3 = []
+            pile4 = []
+        elif opt == "s":
+            print ("Your scores:")
+            print ()
+            x = 0
+            for i in range(len(scorelist)):
+                print(f"{i}: {scorelist[i]}")
+                x = x + scorelist[i]
+            print ()
+            print ("Average:")
+            print()
+            average = round((x) / (len(scorelist)),2 )
+            print(f"{average}")
+        elif opt == "q":
+            break
+       
+        
+
+        
 
 
-initCards()
 
-#TEMP prototype
-while True:
-    print_cards()
-
-    inp = input()
-    if inp == 'd':
-        if len(deck) >= 4:
-            addCards()
-
-    elif len(inp) >= 2 and inp[1] == 'd':
-        discardCardRules(int(inp[0]))
-
-    elif len(inp) >= 2:
-        moveCardRules(int(inp[0]), int(inp[1]))
 
 
 #example
-
-
+#
 # moveCard(deck, pile1)
 # moveCard(deck, pile1)
 # moveCard(deck, pile1)
