@@ -394,10 +394,10 @@ def callAction():
 
 
 def gameLoop():
+    scorelist = []
     while True:
         print ("Patiens Idioten")
         print()
-        scorelist = []
         game = {"n":"New game", "s":"score", "q":"quit"}
         viewdict(game)
         opt = input("choose option: ")
