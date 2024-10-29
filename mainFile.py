@@ -31,26 +31,44 @@ def print_cards():
     piles = [pile1, pile2, pile3, pile4]
 
     depth = 0
+    shortest = -1
     for pile in piles:
         if len(pile) > depth:
             depth = len(pile)
+        if len(pile) < shortest or shortest == -1:
+            shortest = len(pile)
 
     depth += 1
     if depth == 1:
         depth = 2
+
+    hidden = 0
+    if shortest >= 4:
+        hidden = shortest - 2
+        if hidden > 9:
+            hidden = 9
     
     # depth is the number of rows to print
     # depth is atleast 2, as printing empty card outlines requires 2 rows
 
+    print(" 1   2   3   4")
+
     # one call to print_row_at_cards() per iteration
-    for i in range(depth):
+    i = 0
+    row = 0 # purely used by generate_pre_post_strings() as i does not necessarily correspond to row (happens if there are hidden cards)
+    while i < depth:    # no "for in range()" as i might require modification
         cards = []
         sections = []
 
         for pile in piles:
+            # hidden cards
+            if i < hidden:
+                cards.append(hidden)    # will print: |{hidden}+|
+                sections.append(True)
+                i = hidden-1   # i == hidden next iteration
 
             # empty pile and first 2 rows -> print empty card outline
-            if len(pile) == 0 and i < 2:    
+            elif len(pile) == 0 and i < 2:    
                 cards.append(0)
                 if i == 0:  # print upper part of empty card outline
                     sections.append(True)
@@ -72,46 +90,51 @@ def print_cards():
                 cards.append(pile[i])
                 sections.append(True)
 
-
-        
-        #TODO put pre/post string gen in separate fn
-        upper_line = "\u256D\u2500\u2500\u256E"
-        lower_line = "\u2570\u2500\u2500\u256F"
-        pipe = '\u2502'
-        
-        cards_discarded_str = ""
-        cards_left_str = ""
-
-        if cards_discarded < 10:
-            cards_discarded_str += "0"
-        if len(deck) < 10:
-            cards_left_str += "0"
-    
-        cards_discarded_str += str(cards_discarded)
-        cards_left_str += str(len(deck))
-
-
-        post = [
-            "    " + upper_line,
-            "    " + pipe + cards_left_str + pipe,
-            "    " + pipe + cards_discarded_str + pipe,
-            "    " + lower_line 
-        ]
-        whitespace = ["", "        "]
-
-        if i == 0:
-            prestr = [whitespace[0], whitespace[0]]
-            poststr = [post[0], post[1]]
-        elif i == 1:
-            prestr = [whitespace[0], whitespace[0]]
-            poststr = [post[2], post[3]]
-        else:
-            prestr = [whitespace[0], whitespace[0]]
-            poststr = [whitespace[1], whitespace[1]]
-
+        prestr, poststr = generate_pre_post_strings(row)
         print_row_of_cards(prestr, cards, sections, poststr)
+        row += 1
+        i += 1
 
-    print(" 1   2   3   4")
+
+# generate valid prestr and poststr
+# desired pre/post strings/visuals are defined in this function
+def generate_pre_post_strings(halfcard_row):
+    upper_line = "\u256D\u2500\u2500\u256E"
+    lower_line = "\u2570\u2500\u2500\u256F"
+    pipe = '\u2502'
+    
+    cards_discarded_str = ""
+    cards_left_str = ""
+    
+    if cards_discarded < 10:
+        cards_discarded_str += "0"
+    if len(deck) < 10:
+        cards_left_str += "0"
+    
+    cards_discarded_str += str(cards_discarded)
+    cards_left_str += str(len(deck))
+    
+    
+    post = [
+        "    " + upper_line,
+        "    " + pipe + cards_left_str + pipe,
+        "    " + pipe + cards_discarded_str + pipe,
+        "    " + lower_line 
+    ]
+    whitespace = ["", "        "]
+    
+    if halfcard_row == 0:
+        prestr = [whitespace[0], whitespace[0]]
+        poststr = [post[0], post[1]]
+    elif halfcard_row == 1:
+        prestr = [whitespace[0], whitespace[0]]
+        poststr = [post[2], post[3]]
+    else:
+        prestr = [whitespace[0], whitespace[0]]
+        poststr = [whitespace[1], whitespace[1]]
+
+    return prestr, poststr
+
 
 
 
@@ -138,8 +161,6 @@ def print_cards():
 def print_row_of_cards(pre_strings, cards, sections, post_strings):
     red = "\033[31m"
     default = "\033[0m"
-    #red = "\033[31m\033[107m" #inverted
-    #default = "\033[30m\033[107m" #inverted
 
     white = "    "
     upper_line = "\u256D\u2500\u2500\u256E"
@@ -176,49 +197,9 @@ def print_row_of_cards(pre_strings, cards, sections, post_strings):
 
             continue
 
-
         # else, print a card
-        #TODO put in a separate fn?
+        symbols[i], colors[i], values[i] = get_card_visuals(cards[i], red, default)
 
-        suit = cards[i][0]
-        rank = cards[i][1]
-
-        if suit == 'S':
-            symbols[i] = '\u2660'
-            colors[i] = default
-
-        elif suit == 'H':
-            symbols[i] = '\u2665'
-            colors[i] = red;
-
-        elif suit == 'D':
-            symbols[i] = '\u2666'
-            colors[i] = red;
-
-        elif suit == 'C':
-            symbols[i] = '\u2663'
-            colors[i] = default
-
-
-        # change ace (14), (10), jack (11), queen (12), king (13) to A, T, J, Q, K respectively
-        if rank == 1 or rank == 14:
-            values[i] = 'A'
-
-        elif rank == 10:   # '10' is two characters and therefore looks skewed when printed
-            values[i] = 'T'
-
-        elif rank == 11:
-            values[i] = 'J'
-
-        elif rank == 12:
-            values[i] = 'Q'
-
-        elif rank == 13:
-            values[i] = 'K'
-
-        else:
-            values[i] = str(rank)
-        
 
     # build row1, row2
     if pre_strings:
@@ -244,6 +225,52 @@ def print_row_of_cards(pre_strings, cards, sections, post_strings):
 
     print(row1)
     print(row2)
+
+
+def get_card_visuals(card, red, default):
+    suit = card[0]
+    rank = card[1]
+
+    if suit == 'S':
+        symbol = '\u2660'
+        color = default
+
+    elif suit == 'H':
+        symbol = '\u2665'
+        color = red;
+
+    elif suit == 'D':
+        symbol = '\u2666'
+        color = red;
+
+    elif suit == 'C':
+        symbol = '\u2663'
+        color = default
+
+
+    # change ace (14), (10), jack (11), queen (12), king (13) to A, T, J, Q, K respectively
+    if rank == 1 or rank == 14:
+        value = 'A'
+
+    elif rank == 10:   # '10' is two characters and therefore looks skewed when printed
+        value = 'T'
+
+    elif rank == 11:
+        value = 'J'
+
+    elif rank == 12:
+        value = 'Q'
+
+    elif rank == 13:
+        value = 'K'
+
+    else:
+        value = str(rank)
+
+
+    return symbol, color, value
+
+
 
 
 #func below are acctions, not rule
