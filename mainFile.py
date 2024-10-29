@@ -361,45 +361,75 @@ def discardCardRules(pile_n): # number between 1 and 4
     
     return 1    # card not discardable
 
+
 #func below are player actions
 
+# get input from user and perform operations
+#   True    - conclude current session/finish
+#   False   - continue (print cards and call callAction() again)
 def callAction():
-    choice = {"n": "New Cards", "m": "Move", "d": "discard", "f":"finish"}
+    choice = {"n": "deal cards", "m": "move card", "d": "discard card", "f": "finish"}
     viewdict(choice)
+
     action = input("choose action: ")
     if action == "n":
         addCards()
+
     elif action == "m":
-        x = int(input("From: "))
-        y = int (input("To: "))
-        z = moveCardRules(x,y)
-        if z == 1:
-            print("Error: source pile is empty")
-        elif z == 2:
-            print("Error: targeted pile isn't empty")
-        elif z == 3:
+        try:
+            src = int(input("from: "))
+            dst = int(input("to: "))
+        except ValueError:
+            print("Error: invalid input\n")
+            return False
+        except KeyboardInterrupt:
+            print()
+            exit()
+        except EOFError:
+            print()
+            exit()
+
+        status = moveCardRules(src, dst)
+
+        if status == 1:
+            print("source pile is empty")
+        elif status == 2:
+            print("targeted pile isn't empty")
+        elif status == 3:
             print("Error: invalid input")
+
         print()
+
+
     elif action == "d":
-        x = int(input("From: "))
-        z = discardCardRules(x)
-        if z == 1:
+        try:
+            p = int(input("from: "))
+        except ValueError:
+            print("Error: invalid input\n")
+            return False
+        except KeyboardInterrupt:
+            print()
+            exit()
+        except EOFError:
+            print()
+            exit()
+
+        status = discardCardRules(p)
+
+        if status == 1:
             print("targeted card isn't discardable")
-        elif z == 2:
+        elif status == 2:
             print("Error: invalid input")
-        elif z == 3:
-            print("Error: source pile is empty")
+        elif status == 3:
+            print("source pile is empty")
+
         print()
+
+
     elif action == "f":
         return True
+
     return False
-        
-        
-
-        
-
-
-#game loop
 
 
 def gameLoop():
@@ -411,56 +441,46 @@ def gameLoop():
         pile3.clear()
         pile4.clear()
         initCards()
-        print ("Patiens Idioten")
-        print()
-        game = {"n":"New game", "s":"score", "q":"quit"}
+
+        print("Patiens Idioten\n")
+        game = {"n":"new game", "s":"score", "q":"quit"}
         viewdict(game)
-        opt = input("choose option: ")
+
+        try:
+            opt = input("choose option: ")
+        except KeyboardInterrupt:
+            print()
+            exit()
+        except EOFError:
+            print()
+            exit()
+
         if opt == "n":
             while True:
                 print_cards()
                 if callAction():
                     break
+
             score = 48 - cards_discarded
-            print (f"your score was: {score}")
             scorelist.append(score)
-            print()
+            print (f"your score was: {score}\n")
+
         elif opt == "s":
-            print ("Your scores:")
-            print ()
+            print("your scores:")
+            print("game: score")
             x = 0
             for i in range(len(scorelist)):
-                print(f"{i}: {scorelist[i]}")
-                x = x + scorelist[i]
-            print ()
-            print(scorelist)
-            if len(scorelist) != 0:
+                print(f"{i+1}:    {scorelist[i]}")
+                x += scorelist[i]
+
+            if len(scorelist):
                 average = round((x) / (len(scorelist)),2 )
-            else:
-                average = 0
-            print(f"average: {average}")
+                print(f"average: {average}")
+
+            print('\n')
+
         elif opt == "q":
             break
 
 
 gameLoop()
-       
-
-#example
-#
-# moveCard(deck, pile1)
-# moveCard(deck, pile1)
-# moveCard(deck, pile1)
-# moveCard(deck, pile2)
-# moveCard(deck, pile2)
-# moveCard(deck, pile4)
-# moveCard(deck, pile4)
-# pile1 = [("S", 4), ("H", 13)]
-# pile2 = [("C", 14)]
-# pile3 = [("H", 11), ("C", 5)]
-# pile4 = [("H", 12)]
-# print_cards()
-# print(discardCardRules(4))
-# print_cards()
-# print(discardCardRules(3))
-# print_cards()
