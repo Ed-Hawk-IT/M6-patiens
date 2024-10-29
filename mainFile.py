@@ -254,10 +254,13 @@ def discardCard(fromPile2): #discard a card
     fromPile2.pop()
 
 def addCards(): #add four card in all piles
-    moveCard(deck,pile1)
-    moveCard(deck,pile2)
-    moveCard(deck,pile3)
-    moveCard(deck,pile4)
+    if len(deck) != 0:
+        moveCard(deck,pile1)
+        moveCard(deck,pile2)
+        moveCard(deck,pile3)
+        moveCard(deck,pile4)
+    else:
+        print ("Error: no cards to draw")
 
 #func below are Rules
 
@@ -355,8 +358,8 @@ def callAction():
     if action == "n":
         addCards()
     elif action == "m":
-        x = input("From: ")
-        y = input("To: ")
+        x = int(input("From: "))
+        y = int (input("To: "))
         z = moveCardRules(x,y)
         if z == 1:
             print("Error: source pile is empty")
@@ -366,7 +369,7 @@ def callAction():
             print("Error: invalid input")
         print()
     elif action == "d":
-        x = input("From: ")
+        x = int(input("From: "))
         z = discardCardRules(x)
         if z == 1:
             print("targeted card isn't discardable")
@@ -418,20 +421,16 @@ def gameLoop():
                 print(f"{i}: {scorelist[i]}")
                 x = x + scorelist[i]
             print ()
-            print ("Average:")
-            print()
-            average = round((x) / (len(scorelist)),2 )
-            print(f"{average}")
+            if len(scorelist) != 0:
+                average = round((x) / (len(scorelist)),2 )
+            else:
+                average = 0
+            print(f"average: {average}")
         elif opt == "q":
             break
        
-        
 
-        
-
-
-
-
+gameLoop()
 
 #example
 #
