@@ -283,14 +283,15 @@ def moveCard(src, dst):  # move top card in src to dst, assumes src to be non-em
 def discardCard(fromPile2): #discard a card
     fromPile2.pop()
 
-def addCards(): #add four card in all piles
+def addCards(): #add four cards in all piles
     if len(deck) != 0:
-        moveCard(deck,pile1)
-        moveCard(deck,pile2)
-        moveCard(deck,pile3)
-        moveCard(deck,pile4)
-    else:
-        print ("Error: no cards to draw")
+        moveCard(deck, pile1)
+        moveCard(deck, pile2)
+        moveCard(deck, pile3)
+        moveCard(deck, pile4)
+        return 0
+
+    return 1
 
 #func below are Rules
 
@@ -321,12 +322,14 @@ def moveCardRules(src, dst):
 
 # discard a card, if such operation is permitted
 # updates global variable cards_discarded
+# if flag test is set, no card will actually be discarded and cards_discarded
+# will remain unchanged (this is used to test whether or not the player can discard any cards)
 #return:
-#   0 succes
+#   0 success
 #   1 operation not permitted
 #   2 invalid input
 #   3 source empty (no card to discard)
-def discardCardRules(pile_n): # number between 1 and 4
+def discardCardRules(pile_n, test): # number between 1 and 4
     cardPiles = [pile1, pile2, pile3, pile4]
     status = False
     topCards = []
@@ -352,14 +355,33 @@ def discardCardRules(pile_n): # number between 1 and 4
             p.pop()
 
     if status == True:
-        discardCard(cardPiles[srcpile])
-        cards_discarded += 1
+        if not test:    # not a test, player wants to discard
+            discardCard(cardPiles[srcpile])
+            cards_discarded += 1
         return 0    #success
 
     if discarded[0] == "Joker":
         return 3    #src empty
     
     return 1    # card not discardable
+
+
+# check whether or not game is over
+def gameover():
+    if deck:    # still cards in the deck
+        return False
+
+    piles = [pile1, pile2, pile3, pile4]
+    for pile in piles:
+        if not pile:    # empty pile, player can still move cards
+            return False
+
+    for i in range(len(piles)):
+        if discardCardRules(i+1, True) == 0:    # player can still discard card(s)
+            return False
+
+    return True # game over, player cannot do anything
+
 
 
 #func below are player actions
@@ -373,7 +395,8 @@ def callAction():
 
     action = input("choose action: ")
     if action == "n":
-        addCards()
+        if addCards():
+            print ("no more cards to deal")
 
     elif action == "m":
         try:
@@ -414,7 +437,7 @@ def callAction():
             print()
             exit()
 
-        status = discardCardRules(p)
+        status = discardCardRules(p, False)
 
         if status == 1:
             print("targeted card isn't discardable")
@@ -442,7 +465,7 @@ def gameLoop():
         pile4.clear()
         initCards()
 
-        print("Patiens Idioten\n")
+        print("\033[32mPatiens Idioten\033[0m\n")
         game = {"n":"new game", "s":"score", "q":"quit"}
         viewdict(game)
 
@@ -458,6 +481,10 @@ def gameLoop():
         if opt == "n":
             while True:
                 print_cards()
+                if gameover():
+                    print("\033[31mGame Over!\033[0m")
+                    break
+
                 if callAction():
                     break
 
