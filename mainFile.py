@@ -73,7 +73,8 @@ def print_cards():
                 sections.append(True)
 
 
-
+        
+        #TODO put pre/post string gen in separate fn
         upper_line = "\u256D\u2500\u2500\u256E"
         lower_line = "\u2570\u2500\u2500\u256F"
         pipe = '\u2502'
@@ -109,6 +110,8 @@ def print_cards():
             poststr = [whitespace[1], whitespace[1]]
 
         print_row_of_cards(prestr, cards, sections, poststr)
+
+    print(" 1   2   3   4")
 
 
 
@@ -424,13 +427,8 @@ def gameLoop():
             print(f"{average}")
         elif opt == "q":
             break
-       
-        
 
-        
-
-
-
+gameLoop()
 
 
 #example
