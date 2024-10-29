@@ -8,7 +8,7 @@ pile4 = []
 
 
 
-def initCards():
+def initCards(): #makes tuples of cards that are put in a deck.
     suits = ["S","H","C","D"]
     ranks = [2,3,4,5,6,7,8,9,10,11,12,13,14]    # ace == 14
     for suit in suits:
@@ -16,7 +16,7 @@ def initCards():
             deck.append ((suit, rank))
     random.shuffle(deck) # shuffle deck 
 
-def viewdict (ls):
+def viewdict (ls): #will print a dictonary
     for i in ls:
         print (f"{i}: {ls[i]}")
     print ()
@@ -190,7 +190,7 @@ def print_row_of_cards(cards, sections):
     print(row2)
 
 
-#func below are acctions, but not rules
+#func below are acctions, not rule
 
 def moveCard(src, dst):  # move top card in src to dst, assumes src to be non-empty
     card = src[-1]
@@ -206,7 +206,7 @@ def addCards(): #add four card in all piles
     moveCard(deck,pile3)
     moveCard(deck,pile4)
 
-#func below are Rules,
+#func below are Rules
 
 
 # moves top card in src to dst, if such operation is permitted (dst empty)
@@ -331,23 +331,21 @@ while True:
 
 
 #example
-#def test():
-#    moveCard(deck, pile1)
-#    moveCard(deck, pile1)
-#    moveCard(deck, pile1)
-#    moveCard(deck, pile2)
-#    moveCard(deck, pile2)
-#    moveCard(deck, pile4)
-#    moveCard(deck, pile4)
-#
-##test()
-#pile1 = [("S", 4), ("H", 13)]
-#pile2 = [("C", 14)]
-#pile3 = [("H", 11), ("C", 5)]
-#pile4 = [("H", 12)]
-#print_cards()
-#
-#print(discardCardRules(4))
-#print_cards()
-#print(discardCardRules(3))
-#print_cards()
+
+
+# moveCard(deck, pile1)
+# moveCard(deck, pile1)
+# moveCard(deck, pile1)
+# moveCard(deck, pile2)
+# moveCard(deck, pile2)
+# moveCard(deck, pile4)
+# moveCard(deck, pile4)
+# pile1 = [("S", 4), ("H", 13)]
+# pile2 = [("C", 14)]
+# pile3 = [("H", 11), ("C", 5)]
+# pile4 = [("H", 12)]
+# print_cards()
+# print(discardCardRules(4))
+# print_cards()
+# print(discardCardRules(3))
+# print_cards()
