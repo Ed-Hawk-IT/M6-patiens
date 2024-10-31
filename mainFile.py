@@ -456,6 +456,7 @@ def callAction():
 
 
 def gameLoop():
+    global cards_discarded
     scorelist = []
     while True:
         deck.clear()
@@ -489,6 +490,7 @@ def gameLoop():
                     break
 
             score = 48 - cards_discarded
+            cards_discarded = 0
             scorelist.append(score)
             print (f"your score was: {score}\n")
 
